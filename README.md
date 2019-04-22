@@ -17,3 +17,7 @@ The project is based on Maven and runs in a Docker container. To build the proje
 To start the rests run:
 
 	$ docker-compose up
+	
+## Log Level
+	
+The log level for all org.imixs.worklfow classes is set to FINEST. See the standalone.xml file.
