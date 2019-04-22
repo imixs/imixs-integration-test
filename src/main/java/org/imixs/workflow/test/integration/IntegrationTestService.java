@@ -25,9 +25,13 @@ package org.imixs.workflow.test.integration;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
 
 import org.imixs.workflow.engine.DocumentService;
 import org.imixs.workflow.engine.ModelService;
@@ -36,7 +40,9 @@ import org.imixs.workflow.engine.WorkflowService;
 import org.imixs.workflow.exceptions.AccessDeniedException;
 
 /**
- * The IntegrationTestService runs on deployment and starts the tests
+ * The IntegrationTestService runs on deployment and starts the tests.
+ * <p>
+ * The service starts a EJB Timer Service which runs the tests
  * 
  * @author rsoika
  * 
@@ -44,7 +50,11 @@ import org.imixs.workflow.exceptions.AccessDeniedException;
 @Startup
 @Singleton
 public class IntegrationTestService {
+	
+	private static final long START_DELAY_SECONDS = 5 * 1000L;
 
+	@Resource
+	private TimerService timerService;
 
 	@EJB
 	DocumentService documentService;
@@ -67,9 +77,21 @@ public class IntegrationTestService {
 	 */
 	@PostConstruct
 	public void startup() {
-		logger.info("...starting Integration tests...");
+		logger.info("...intializing Integration Tests in " + START_DELAY_SECONDS + " seconds...");
+		TimerConfig config = new TimerConfig();
+		config.setPersistent(false);
+		timerService.createIntervalTimer(START_DELAY_SECONDS, START_DELAY_SECONDS, config);
 	}
 
+	/**
+	 * Using EJB TimerService in current project for tasks like periodic data
+	 * pruning, or back-end data synchronization. It allows not only single time
+	 * execution, but also interval timers and timers with calendar based schedule.
+	 */
+	@Timeout
+	private synchronized void onTimer() {
+		
+		logger.info("...run Integration Tests...");
 	
-
+	}
 }
