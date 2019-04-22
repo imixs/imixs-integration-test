@@ -26,6 +26,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RunAs;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -33,11 +35,8 @@ import javax.ejb.Timeout;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 
-import org.imixs.workflow.engine.DocumentService;
-import org.imixs.workflow.engine.ModelService;
-import org.imixs.workflow.engine.PropertyService;
-import org.imixs.workflow.engine.WorkflowService;
 import org.imixs.workflow.exceptions.AccessDeniedException;
+import org.imixs.workflow.exceptions.QueryException;
 
 /**
  * The IntegrationTestService runs on deployment and starts the tests.
@@ -47,6 +46,8 @@ import org.imixs.workflow.exceptions.AccessDeniedException;
  * @author rsoika
  * 
  */
+@DeclareRoles({ "org.imixs.ACCESSLEVEL.MANAGERACCESS" })
+@RunAs("org.imixs.ACCESSLEVEL.MANAGERACCESS")
 @Startup
 @Singleton
 public class IntegrationTestService {
@@ -56,18 +57,12 @@ public class IntegrationTestService {
 	@Resource
 	private TimerService timerService;
 
+	
 	@EJB
-	DocumentService documentService;
-
+	LuceneTest luceneTest;
 	@EJB
-	ModelService modelService;
-
-	@EJB
-	PropertyService propertyService;
-
-	@EJB
-	WorkflowService workflowService;
-
+	ModelTest modelTest;
+	
 	private static Logger logger = Logger.getLogger(IntegrationTestService.class.getName());
 
 	/**
@@ -87,11 +82,29 @@ public class IntegrationTestService {
 	 * Using EJB TimerService in current project for tasks like periodic data
 	 * pruning, or back-end data synchronization. It allows not only single time
 	 * execution, but also interval timers and timers with calendar based schedule.
+	 * @throws QueryException 
 	 */
 	@Timeout
-	private synchronized void onTimer() {
+	private synchronized void onTimer() throws QueryException {
 		
 		logger.info("...run Integration Tests...");
 	
+		
+		modelTest.run();
+		
+		
+		luceneTest.run();
 	}
+	
+	
+	
+	
+	
+	
 }
+
+
+
+
+
+
