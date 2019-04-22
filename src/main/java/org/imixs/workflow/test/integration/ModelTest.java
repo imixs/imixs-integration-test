@@ -10,6 +10,8 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.imixs.workflow.ItemCollection;
+import org.imixs.workflow.Model;
 import org.imixs.workflow.bpmn.BPMNModel;
 import org.imixs.workflow.bpmn.BPMNParser;
 import org.imixs.workflow.engine.ModelService;
@@ -35,9 +37,19 @@ public class ModelTest implements Serializable {
 	ModelService modelService;
 
 	
-	public void run() throws QueryException {
+	public boolean run() throws QueryException, ModelException {
 
-		loadModel("/workflow/ticket.bpmn");
+		loadModel("/workflow/ticket-1.0.0.bpmn");
+		
+		// test model
+		Model model = modelService.getModel("ticket-1.0");
+		
+		ItemCollection task=model.getTask(1000);
+		if (task==null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	/**

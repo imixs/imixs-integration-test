@@ -36,6 +36,7 @@ import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 
 import org.imixs.workflow.exceptions.AccessDeniedException;
+import org.imixs.workflow.exceptions.ModelException;
 import org.imixs.workflow.exceptions.QueryException;
 
 /**
@@ -83,17 +84,22 @@ public class IntegrationTestService {
 	 * pruning, or back-end data synchronization. It allows not only single time
 	 * execution, but also interval timers and timers with calendar based schedule.
 	 * @throws QueryException 
+	 * @throws ModelException 
 	 */
 	@Timeout
-	private synchronized void onTimer() throws QueryException {
+	private synchronized void onTimer() throws QueryException, ModelException {
 		
 		logger.info("...run Integration Tests...");
 	
 		
-		modelTest.run();
+		if (modelTest.run()) {
+			logger.info("====> ModelTest OK");
+		}
 		
 		
-		luceneTest.run();
+		if (luceneTest.run()) {
+			logger.info("====> LuceneTest OK");
+		}
 	}
 	
 	

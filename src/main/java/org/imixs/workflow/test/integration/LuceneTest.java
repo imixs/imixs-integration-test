@@ -31,7 +31,7 @@ public class LuceneTest implements Serializable {
 	@EJB
 	DocumentService documentService;
 
-	public void run() throws QueryException {
+	public boolean run() throws QueryException {
 
 		// test simple doc
 		ItemCollection doc = createDocument();
@@ -42,6 +42,8 @@ public class LuceneTest implements Serializable {
 		doc = saveDocumentTwice();
 		findDocument();
 		documentService.remove(doc);
+		
+		return true;
 	}
 
 	/**
