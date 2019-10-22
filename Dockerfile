@@ -7,5 +7,5 @@ MAINTAINER ralph.soika@imixs.com
 COPY ./src/docker/configuration/* ${WILDFLY_CONFIG}/
 
 # Copy sample application
-COPY ./target/imixs-integration-test*.war $WILDFLY_DEPLOYMENT  
+COPY ./target/imixs-integration-test.war $WILDFLY_DEPLOYMENT  
 

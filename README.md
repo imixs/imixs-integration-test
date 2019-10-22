@@ -12,7 +12,7 @@ The version number of this test suite is coupled directly to the latest version 
 
 The project is based on Maven and runs in a Docker container. To build the project and a docker image on the current version run:
 
-	$ mvn clean install -Pdocker-build
+	$ mvn clean install -Pdocker
  
 To start the rests run:
 
